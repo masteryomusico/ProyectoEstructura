@@ -58,8 +58,8 @@ El proyecto está organizado en un repositorio siguiendo el nombre establecido e
 | Aplicación Web | ✅ Completado |
 | Formato ABP | ✅ Diligenciado |
 | Pantalla de Documentación | ✅ Incluida |
-| Pantalla de Ejemplos (10) | ✅ Incluida |
-| Pantalla de Retos (5) | ✅ Incluida |
+| Pantalla de Ejemplos (24) | ✅ Incluida |
+| Pantalla de Retos (24) | ✅ Incluida |
 | Clip Explicativo | ✅ Incluido |
 | Organización en Repositorio | ✅ Completado |
 
