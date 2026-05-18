@@ -37,8 +37,8 @@ Desarrollo de la primera aplicación web integrando el stack tecnológico mencio
 El manual fue diligenciado según el formato ABP disponible en la plataforma e incluye las siguientes secciones:
 
 - 📄 **Pantalla de Documentación** — Descripción técnica de cada tema abordado.
-- 💡 **Pantalla de Ejemplos** — 10 ejemplos prácticos ilustrativos.
-- ⚠️ **Pantalla de Retos** — 5 retos identificados *(pendiente de solucionar con recomendaciones)*.
+- 💡 **Pantalla de Ejemplos** — 24 ejemplos prácticos ilustrativos.
+- ⚠️ **Pantalla de Retos** — 24 retos identificados *(pendiente de solucionar con recomendaciones)*.
 - 🎬 **Clip Explicativo** — Video de autoría del equipo, realizado con herramienta de libre elección.
 
 ---
