@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Manual · Estructuras de Datos</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: rgba(255,255,255,0.07);
+    --text: #e8e8f0;
+    --muted: #7070a0;
+    --accent1: #7c6aff;
+    --accent2: #ff6a8a;
+    --accent3: #6affd4;
+    --accent4: #ffd06a;
+    --accent5: #6ab8ff;
+    --accent6: #ff9d6a;
+    --glow1: rgba(124,106,255,0.25);
+    --glow2: rgba(255,106,138,0.2);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 999; opacity: .5;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(10,10,15,0.7);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.1rem;
+    color: var(--accent1);
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--accent3); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 6rem 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-orb {
+    position: absolute; border-radius: 50%;
+    filter: blur(80px); pointer-events: none;
+  }
+  .orb1 { width: 500px; height: 500px; background: var(--glow1); top: -100px; left: -100px; animation: drift1 12s ease-in-out infinite alternate; }
+  .orb2 { width: 400px; height: 400px; background: var(--glow2); bottom: -80px; right: -80px; animation: drift2 15s ease-in-out infinite alternate; }
+
+  @keyframes drift1 { to { transform: translate(60px, 40px); } }
+  @keyframes drift2 { to { transform: translate(-60px, -40px); } }
+
+  .hero-badge {
+    display: inline-block; padding: 0.35rem 1rem;
+    border: 1px solid var(--accent1); border-radius: 100px;
+    font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent1); margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 800; line-height: 1;
+    letter-spacing: -0.04em;
+    animation: fadeUp 0.9s ease 0.1s both;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent1); }
+  .hero h1 strong { display: block; color: var(--accent3); }
+  .hero-sub {
+    max-width: 520px; margin: 1.5rem auto 0;
+    color: var(--muted); font-size: 0.9rem;
+    animation: fadeUp 1s ease 0.2s both;
+  }
+  .hero-scroll {
+    margin-top: 4rem;
+    animation: fadeUp 1s ease 0.4s both, bounce 2s ease 2s infinite;
+    color: var(--muted); font-size: 0.7rem; letter-spacing: 0.15em;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── SECTION HEADER ─── */
+  .section-label {
+    font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent3); margin-bottom: 0.6rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700; letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  /* ─── TOPICS GRID ─── */
+  #temas {
+    padding: 6rem 2rem;
+    max-width: 1200px; margin: 0 auto;
+  }
+  #temas > .section-label, #temas > .section-title { text-align: center; }
+  #temas > .section-title { margin-bottom: 0.5rem; }
+  .topics-intro { text-align: center; color: var(--muted); font-size: 0.85rem; margin-bottom: 4rem; }
+
+  .topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem;
+    position: relative; overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, border-color 0.3s;
+  }
+  .topic-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--card-glow, transparent);
+    opacity: 0; transition: opacity 0.4s;
+    border-radius: 16px;
+  }
+  .topic-card:hover::before { opacity: 1; }
+  .topic-card:hover { transform: translateY(-4px); border-color: var(--card-color, var(--accent1)); }
+
+  .topic-num {
+    font-size: 0.65rem; letter-spacing: 0.15em;
+    color: var(--card-color, var(--accent1));
+    text-transform: uppercase; margin-bottom: 1rem;
+  }
+  .topic-icon {
+    font-size: 2rem; margin-bottom: 1rem; display: block;
+  }
+  .topic-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    letter-spacing: -0.02em; margin-bottom: 0.6rem;
+    color: var(--text);
+  }
+  .topic-card p {
+    font-size: 0.8rem; color: var(--muted); line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  /* code block inside card */
+  .topic-code {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 1rem;
+    font-size: 0.72rem; color: var(--accent3);
+    overflow-x: auto; white-space: pre;
+    font-family: 'DM Mono', monospace;
+    line-height: 1.6;
+  }
+
+  .topic-tag {
+    display: inline-block; margin-top: 1rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+    font-size: 0.65rem; letter-spacing: 0.1em;
+    background: rgba(255,255,255,0.05);
+    color: var(--card-color, var(--accent1));
+    border: 1px solid var(--card-color, var(--accent1));
+    opacity: 0.7;
+  }
+
+  /* ─── RETOS ─── */
+  #retos {
+    padding: 6rem 2rem;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  #retos .inner { max-width: 1000px; margin: 0 auto; }
+  #retos .section-title { margin-bottom: 0.5rem; }
+  .retos-intro { color: var(--muted); font-size: 0.85rem; margin-bottom: 3rem; }
+
+  .retos-list { display: flex; flex-direction: column; gap: 1.2rem; }
+  .reto-item {
+    display: flex; align-items: flex-start; gap: 1.5rem;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.5rem 2rem;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .reto-item:hover { border-color: var(--accent2); transform: translateX(6px); }
+  .reto-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem; font-weight: 800;
+    color: var(--accent2); opacity: 0.3; min-width: 48px;
+    line-height: 1;
+  }
+  .reto-body h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem;
+  }
+  .reto-body p { font-size: 0.8rem; color: var(--muted); }
+  .reto-badge {
+    margin-left: auto; align-self: center;
+    padding: 0.25rem 0.75rem; border-radius: 100px;
+    font-size: 0.65rem; letter-spacing: 0.1em;
+    background: rgba(255,106,138,0.1);
+    color: var(--accent2); border: 1px solid var(--accent2);
+    white-space: nowrap;
+  }
+
+  /* ─── DOCS ─── */
+  #documentacion {
+    padding: 6rem 2rem;
+    max-width: 900px; margin: 0 auto;
+  }
+  #documentacion .section-title { margin-bottom: 0.5rem; }
+  .docs-intro { color: var(--muted); font-size: 0.85rem; margin-bottom: 3rem; }
+
+  .docs-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+  .docs-table th {
+    text-align: left; padding: 0.75rem 1rem;
+    font-family: 'Syne', sans-serif; font-size: 0.7rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent4);
+    border-bottom: 1px solid var(--border);
+  }
+  .docs-table td {
+    padding: 1rem; border-bottom: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .docs-table tr:hover td { background: var(--surface2); color: var(--text); }
+  .docs-table td:first-child { color: var(--text); }
+  .comp-tag {
+    display: inline-block; padding: 0.15rem 0.5rem;
+    border-radius: 4px; font-size: 0.65rem;
+    background: rgba(106,255,212,0.1); color: var(--accent3);
+    border: 1px solid rgba(106,255,212,0.2);
+  }
+  .comp-tag.red { background: rgba(255,106,138,0.1); color: var(--accent2); border-color: rgba(255,106,138,0.2); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center; padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 0.75rem;
+  }
+  footer span { color: var(--accent1); }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">ED<span>·</span>Manual</div>
+  <ul class="nav-links">
+    <li><a href="#temas">Temas</a></li>
+    <li><a href="#retos">Retos</a></li>
+    <li><a href="#documentacion">Documentación</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-badge">Estructuras de Datos · 2026</div>
+  <h1>Manual <em>Web</em><strong>Interactivo</strong></h1>
+  <p class="hero-sub">Guía completa de los 10 temas fundamentales del curso, con ejemplos, documentación y retos prácticos.</p>
+  <div class="hero-scroll">↓ &nbsp; scroll para explorar</div>
+</section>
+
+<!-- TEMAS -->
+<section id="temas">
+  <p class="section-label reveal">Parte 2 · Contenido</p>
+  <h2 class="section-title reveal">10 Temas del curso</h2>
+  <p class="topics-intro reveal">Cada tarjeta incluye descripción y ejemplo de código funcional en Python.</p>
+
+  <div class="topics-grid">
+
+    <!-- 1 -->
+    <div class="topic-card reveal" style="--card-color:#7c6aff;--card-glow:radial-gradient(circle at top left,rgba(124,106,255,0.08),transparent 70%)">
+      <div class="topic-num">Tema 01</div>
+      <span class="topic-icon">🗂️</span>
+      <h3>Introducción a las Estructuras de Datos</h3>
+      <p>Concepto de estructura de datos, su rol en la organización eficiente de la información y los tipos fundamentales.</p>
+      <div class="topic-code">agenda = {
+  "Ana": "300-1111",
+  "Luis": "301-2222"
+}
+print(agenda["Ana"])
+# → 300-1111</div>
+      <span class="topic-tag">Fundamentos</span>
+    </div>
+
+    <!-- 2 -->
+    <div class="topic-card reveal" style="--card-color:#6affd4;--card-glow:radial-gradient(circle at top left,rgba(106,255,212,0.08),transparent 70%)">
+      <div class="topic-num">Tema 02</div>
+      <span class="topic-icon">📦</span>
+      <h3>Tipos de Datos y Arreglos Unidimensionales</h3>
+      <p>Tipos primitivos vs compuestos. Arrays como colecciones de elementos del mismo tipo con acceso indexado.</p>
+      <div class="topic-code">notas = [3.5, 4.0, 2.8, 4.5, 3.9]
+print(notas[2])   # → 2.8
+print(len(notas)) # → 5</div>
+      <span class="topic-tag">Arreglos</span>
+    </div>
+
+    <!-- 3 -->
+    <div class="topic-card reveal" style="--card-color:#ffd06a;--card-glow:radial-gradient(circle at top left,rgba(255,208,106,0.08),transparent 70%)">
+      <div class="topic-num">Tema 03</div>
+      <span class="topic-icon">⚙️</span>
+      <h3>Operaciones con Arreglos</h3>
+      <p>Recorrido, búsqueda lineal e inserción/modificación de elementos dentro de un arreglo.</p>
+      <div class="topic-code">notas = [3.5, 4.0, 2.8]
+for n in notas:      # recorrido
+    print(n)
+print(2.8 in notas)  # búsqueda → True
+notas[2] = 3.2       # modificar</div>
+      <span class="topic-tag">Operaciones</span>
+    </div>
+
+    <!-- 4 -->
+    <div class="topic-card reveal" style="--card-color:#6ab8ff;--card-glow:radial-gradient(circle at top left,rgba(106,184,255,0.08),transparent 70%)">
+      <div class="topic-num">Tema 04</div>
+      <span class="topic-icon">⚖️</span>
+      <h3>Comparación Básica entre Estructuras</h3>
+      <p>Diferencias entre arreglos estáticos y listas dinámicas: acceso, inserción, memoria y flexibilidad.</p>
+      <div class="topic-code">arreglo = [1, 2, 3]  # tamaño fijo
+lista   = [1, 2, 3]  # dinámica
+# insertar en medio
+lista.insert(1, 99)
+# → [1, 99, 2, 3]</div>
+      <span class="topic-tag">Comparación</span>
+    </div>
+
+    <!-- 5 -->
+    <div class="topic-card reveal" style="--card-color:#ff9d6a;--card-glow:radial-gradient(circle at top left,rgba(255,157,106,0.08),transparent 70%)">
+      <div class="topic-num">Tema 05</div>
+      <span class="topic-icon">🔗</span>
+      <h3>Listas Enlazadas</h3>
+      <p>Nodos conectados por referencias. Permiten inserción/eliminación eficiente sin necesidad de reubicar elementos.</p>
+      <div class="topic-code">class Nodo:
+  def __init__(self, dato):
+    self.dato = dato
+    self.sig  = None
+n1 = Nodo(10); n2 = Nodo(20)
+n1.sig = n2   # 10 → 20</div>
+      <span class="topic-tag">Punteros</span>
+    </div>
+
+    <!-- 6 -->
+    <div class="topic-card reveal" style="--card-color:#7c6aff;--card-glow:radial-gradient(circle at top left,rgba(124,106,255,0.08),transparent 70%)">
+      <div class="topic-num">Tema 06</div>
+      <span class="topic-icon">📚</span>
+      <h3>Pilas (Stack) — LIFO</h3>
+      <p>Last In, First Out. Úsala para historial de acciones, llamadas de funciones y evaluación de expresiones.</p>
+      <div class="topic-code">pila = []
+pila.append("google.com")
+pila.append("youtube.com")
+pila.append("github.com")
+print(pila.pop())
+# → github.com</div>
+      <span class="topic-tag">LIFO</span>
+    </div>
+
+    <!-- 7 -->
+    <div class="topic-card reveal" style="--card-color:#ff6a8a;--card-glow:radial-gradient(circle at top left,rgba(255,106,138,0.08),transparent 70%)">
+      <div class="topic-num">Tema 07</div>
+      <span class="topic-icon">🎟️</span>
+      <h3>Colas (Queue) — FIFO</h3>
+      <p>First In, First Out. Perfecta para gestión de turnos, impresión de documentos y procesamiento por orden de llegada.</p>
+      <div class="topic-code">from collections import deque
+cola = deque()
+cola.append("Cliente 1")
+cola.append("Cliente 2")
+print(cola.popleft())
+# → Cliente 1</div>
+      <span class="topic-tag">FIFO</span>
+    </div>
+
+    <!-- 8 -->
+    <div class="topic-card reveal" style="--card-color:#6affd4;--card-glow:radial-gradient(circle at top left,rgba(106,255,212,0.08),transparent 70%)">
+      <div class="topic-num">Tema 08</div>
+      <span class="topic-icon">🔀</span>
+      <h3>Integración de Estructuras Lineales</h3>
+      <p>Criterios para elegir entre array, lista enlazada, pila o cola según el problema. Comparación de operaciones clave.</p>
+      <div class="topic-code"># Ctrl+Z → pila
+historial = []
+historial.append("acción 1")
+historial.pop()  # deshace
+
+# Pedidos → cola
+from collections import deque
+pedidos = deque()
+pedidos.append("Pedido A")
+pedidos.popleft()</div>
+      <span class="topic-tag">Integración</span>
+    </div>
+
+    <!-- 9 -->
+    <div class="topic-card reveal" style="--card-color:#ffd06a;--card-glow:radial-gradient(circle at top left,rgba(255,208,106,0.08),transparent 70%)">
+      <div class="topic-num">Tema 09</div>
+      <span class="topic-icon">🌳</span>
+      <h3>Árboles Binarios de Búsqueda (BST)</h3>
+      <p>Estructura jerárquica no lineal. Cada nodo tiene máx. dos hijos. Permite búsquedas en O(log n) en árboles balanceados.</p>
+      <div class="topic-code">def insertar(raiz, v):
+  if raiz is None: return Nodo(v)
+  if v < raiz.val: raiz.izq = insertar(raiz.izq, v)
+  else:            raiz.der = insertar(raiz.der, v)
+  return raiz
+#   5 → 3,7 → 1,4</div>
+      <span class="topic-tag">No lineal</span>
+    </div>
+
+    <!-- 10 -->
+    <div class="topic-card reveal" style="--card-color:#6ab8ff;--card-glow:radial-gradient(circle at top left,rgba(106,184,255,0.08),transparent 70%)">
+      <div class="topic-num">Tema 10</div>
+      <span class="topic-icon">📈</span>
+      <h3>Introducción a la Eficiencia en Algoritmos</h3>
+      <p>Notación Big-O. Diferencia entre O(n) búsqueda lineal y O(log n) búsqueda binaria en función del tamaño de los datos.</p>
+      <div class="topic-code">datos = list(range(1, 1001))
+# Lineal  O(n) → hasta 1000 pasos
+def lineal(arr, x):
+  for v in arr:
+    if v == x: return True
+
+# Binaria O(log n) → ~10 pasos
+def binaria(arr, x):
+  i, f = 0, len(arr)-1
+  while i <= f:
+    m = (i+f)//2
+    if arr[m]==x: return True
+    elif arr[m]<x: i=m+1
+    else: f=m-1</div>
+      <span class="topic-tag">Big-O</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- RETOS -->
+<section id="retos">
+  <div class="inner">
+    <p class="section-label reveal">Parte 2 · Práctica</p>
+    <h2 class="section-title reveal">5 Retos</h2>
+    <p class="retos-intro reveal">Desafíos para consolidar los conceptos del semestre. Pendiente de solución con recomendaciones del equipo.</p>
+
+    <div class="retos-list">
+
+      <div class="reto-item reveal">
+        <div class="reto-num">01</div>
+        <div class="reto-body">
+          <h4>Invertir un arreglo sin usar funciones built-in</h4>
+          <p>Dado un arreglo de n elementos, devuelve el arreglo invertido usando únicamente bucles e índices. No se permite <code>reverse()</code> ni slicing.</p>
+        </div>
+        <span class="reto-badge">O(n) · Arrays</span>
+      </div>
+
+      <div class="reto-item reveal">
+        <div class="reto-num">02</div>
+        <div class="reto-body">
+          <h4>Validar paréntesis balanceados con una Pila</h4>
+          <p>Recibe una cadena con paréntesis <code>()[]&#123;&#125;</code> y determina si están correctamente balanceados, usando una pila como estructura auxiliar.</p>
+        </div>
+        <span class="reto-badge">Stack · LIFO</span>
+      </div>
+
+      <div class="reto-item reveal">
+        <div class="reto-num">03</div>
+        <div class="reto-body">
+          <h4>Simular atención de turno con Cola</h4>
+          <p>Modela una sala de espera: registra pacientes, atiende al primero en llegar y muestra quién sigue. Implementa con <code>deque</code> o lista enlazada.</p>
+        </div>
+        <span class="reto-badge">Queue · FIFO</span>
+      </div>
+
+      <div class="reto-item reveal">
+        <div class="reto-num">04</div>
+        <div class="reto-body">
+          <h4>Insertar y buscar en un BST desde cero</h4>
+          <p>Construye un árbol binario de búsqueda con al menos 8 valores ingresados por el usuario. Implementa <code>insertar()</code> y <code>buscar()</code> con recorrido inorden.</p>
+        </div>
+        <span class="reto-badge">BST · Árboles</span>
+      </div>
+
+      <div class="reto-item reveal">
+        <div class="reto-num">05</div>
+        <div class="reto-body">
+          <h4>Comparar tiempos reales: lineal vs binaria</h4>
+          <p>Con un arreglo de 100 000 elementos, mide el tiempo de ejecución de búsqueda lineal y binaria usando <code>time</code>. Muestra la diferencia en milisegundos.</p>
+        </div>
+        <span class="reto-badge">Big-O · Eficiencia</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- DOCUMENTACIÓN -->
+<section id="documentacion">
+  <p class="section-label reveal">Parte 2 · Referencia</p>
+  <h2 class="section-title reveal">Documentación</h2>
+  <p class="docs-intro reveal">Tabla comparativa de las estructuras vistas en el semestre: operaciones, complejidad y casos de uso.</p>
+
+  <table class="docs-table reveal">
+    <thead>
+      <tr>
+        <th>Estructura</th>
+        <th>Acceso</th>
+        <th>Búsqueda</th>
+        <th>Inserción</th>
+        <th>Eliminación</th>
+        <th>Uso ideal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Array</td>
+        <td><span class="comp-tag">O(1)</span></td>
+        <td><span class="comp-tag">O(n)</span></td>
+        <td><span class="comp-tag red">O(n)</span></td>
+        <td><span class="comp-tag red">O(n)</span></td>
+        <td>Acceso por índice frecuente</td>
+      </tr>
+      <tr>
+        <td>Lista enlazada</td>
+        <td><span class="comp-tag red">O(n)</span></td>
+        <td><span class="comp-tag red">O(n)</span></td>
+        <td><span class="comp-tag">O(1)*</span></td>
+        <td><span class="comp-tag">O(1)*</span></td>
+        <td>Inserciones/eliminaciones frecuentes</td>
+      </tr>
+      <tr>
+        <td>Pila (Stack)</td>
+        <td><span class="comp-tag red">O(n)</span></td>
+        <td><span class="comp-tag red">O(n)</span></td>
+        <td><span class="comp-tag">O(1)</span></td>
+        <td><span class="comp-tag">O(1)</span></td>
+        <td>LIFO — deshacer, recursión</td>
+      </tr>
+      <tr>
+        <td>Cola (Queue)</td>
+        <td><span class="comp-tag red">O(n)</span></td>
+        <td><span class="comp-tag red">O(n)</span></td>
+        <td><span class="comp-tag">O(1)</span></td>
+        <td><span class="comp-tag">O(1)</span></td>
+        <td>FIFO — turnos, impresión</td>
+      </tr>
+      <tr>
+        <td>BST (balanceado)</td>
+        <td><span class="comp-tag">O(log n)</span></td>
+        <td><span class="comp-tag">O(log n)</span></td>
+        <td><span class="comp-tag">O(log n)</span></td>
+        <td><span class="comp-tag">O(log n)</span></td>
+        <td>Datos ordenados, búsqueda rápida</td>
+      </tr>
+      <tr>
+        <td>BST (peor caso)</td>
+        <td><span class="comp-tag red">O(n)</span></td>
+        <td><span class="comp-tag red">O(n)</span></td>
+        <td><span class="comp-tag red">O(n)</span></td>
+        <td><span class="comp-tag red">O(n)</span></td>
+        <td>Árbol degenerado (sin balance)</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size:0.72rem;color:var(--muted);margin-top:0.8rem;">* Con referencia directa al nodo previo.</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Manual Web · Estructuras de Datos 2026 · Elaborado con <span>♥</span> por el equipo del proyecto</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Stagger cards
+  document.querySelectorAll('.topics-grid .topic-card').forEach((card, i) => {
+    card.style.transitionDelay = (i * 0.07) + 's';
+  });
+</script>
+</body>
+</html>
